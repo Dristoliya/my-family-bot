@@ -1,20 +1,16 @@
 import asyncio
-import sys
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 # Используем новый официальный клиент Google Gen AI
 from google import genai 
 
 # ==================== НАСТРОЙКИ КЛЮЧЕЙ ====================
-# 1. Твой токен от @BotFather
+# Твой токен от @BotFather (остается на месте)
 TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
-
-# 2. Вставь сюда свой рабочий ключ Gemini
-GOOGLE_API_KEY = "ВСТАВЬ_СЮДА_СВОЙ_РАБОЧИЙ_КЛЮЧ"
 # ==========================================================
 
-# Настраиваем клиент ИИ напрямую через ключ в коде
-ai_client = genai.Client(api_key=GOOGLE_API_KEY)
+# Настраиваем клиент ИИ БЕЗ ручного ключа (он автоматически возьмет его из Railway)
+ai_client = genai.Client()
 
 # Настраиваем Telegram-бота
 bot = Bot(token=TELEGRAM_TOKEN)
@@ -39,9 +35,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message()
 async def handle_ai_message(message: types.Message):
-    # Кодируем текст в UTF-8, чтобы у сервера не было проблем с русскими буквами
-    raw_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
-    full_request = raw_request.encode('utf-8', errors='ignore').decode('utf-8')
+    full_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
     
     try:
         # Используем актуальную модель gemini-3.6-flash
