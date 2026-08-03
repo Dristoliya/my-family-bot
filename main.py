@@ -1,23 +1,25 @@
-import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
+# Используем новый официальный клиент Google Gen AI
 from google import genai 
 
-# Берем API-ключ ИИ из настроек сервера Render
-GOOGLE_API_KEY = os.environ.get("GEMINI_API_KEY")
+# ==================== НАСТРОЙКИ КЛЮЧЕЙ ====================
+# 1. Твой токен от @BotFather
+TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
 
-# Настраиваем клиент ИИ автоматически
+# 2. Твой проверенный ключ от Gemini жестко прописан в код
+GOOGLE_API_KEY = "AQ.Ab8RN6IrmJ5bdAlMYX0SIpl52V4LWB50zY7Vl9Rq-MFaqqo7UA"
+# ==========================================================
+
+# Настраиваем клиент ИИ напрямую через ключ в коде
 ai_client = genai.Client(api_key=GOOGLE_API_KEY)
 
-# ==================== ТОКЕН TELEGRAM ====================
-TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
-# ========================================================
-
+# Настраиваем Telegram-бота
 bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
 
-# Инструкция для ИИ (Промпт)
+# Инструкция для ИИ (Промпт) — заставляем его быть умным семейным штурманом
 AI_PROMPT = (
     "Ты — продвинутый и заботливый ИИ-ассистент в семейном Telegram-боте дальнобойщика. "
     "Твоя задача — общаться с женой водителя тепло, вежливо и с заботой. "
@@ -39,7 +41,7 @@ async def handle_ai_message(message: types.Message):
     full_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
     
     try:
-        # Используем рабочую модель gemini-3.6-flash
+        # Используем актуальную и проверенную модель gemini-3.6-flash
         response = ai_client.models.generate_content(
             model='gemini-3.6-flash',
             contents=full_request,
@@ -51,7 +53,9 @@ async def handle_ai_message(message: types.Message):
 
 async def main():
     print("ИИ-Бот успешно запущен и готов думать!")
+    # Сбрасываем вебхук от старых конструкторов и удаляем застрявшие сообщения
     await bot.delete_webhook(drop_pending_updates=True) 
+    # Запускаем опрос сервера
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
