@@ -8,8 +8,8 @@ from google import genai
 # 1. Твой токен от @BotFather (уже на месте)
 TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
 
-# 2. Твой рабочий ключ от Gemini (уже на месте)
-GOOGLE_API_KEY = "AQ.Ab8RN6IrmJ5bdAlMYX0SIpl52V4LWB50zY7Vl9Rq-MFaqqo7UA"
+# 2. Твой НАСТОЯЩИЙ ключ от Gemini (ОБЯЗАТЕЛЬНО должен начинаться на AIzaSy...)
+GOOGLE_API_KEY = "ВСТАВЬ_СЮДА_КЛЮЧ_НАЧИНАЮЩИЙСЯ_НА_AIzaSy"
 # ==========================================================
 
 # Настраиваем клиент ИИ напрямую через ключ в коде
@@ -41,7 +41,7 @@ async def handle_ai_message(message: types.Message):
     full_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
     
     try:
-        # Используем актуальную и проверенную модель gemini-3.6-flash
+        # Используем актуальную модель gemini-3.6-flash
         response = ai_client.models.generate_content(
             model='gemini-3.6-flash',
             contents=full_request,
