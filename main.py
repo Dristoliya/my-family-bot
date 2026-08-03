@@ -3,19 +3,17 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 import google.generativeai as genai
 
-# ==================== НАСТРОЙКИ КЛЮЧЕЙ ====================
-# Твой токен от @BotFather (остается на месте)
+# ==================== НАСТРОЙКИ ТЕЛЕГРАМ ====================
 TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
-# ==========================================================
+# ============================================================
 
-# Настраиваем ИИ. Он сам автоматически заберет ваш ключ 
-# из созданной вами на Railway переменной GOOGLE_API_KEY
+# Подключаем ИИ. Ключ автоматически берётся из переменной GOOGLE_API_KEY в Railway
 genai.configure()
 
 bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
 
-# Инструкция для ИИ (Промпт) — заставляем его быть умным семейным штурманом
+# Наша большая инструкция для ИИ
 AI_PROMPT = (
     "Ты — продвинутый и заботливый ИИ-ассистент в семейном Telegram-боте дальнобойщика. "
     "Твоя задача — общаться с женой водителя тепло, вежливо и с заботой. "
@@ -35,22 +33,18 @@ async def cmd_start(message: types.Message):
 @dp.message()
 async def handle_ai_message(message: types.Message):
     full_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
-    
     try:
-        # Используем самую актуальную и стабильную модель gemini-2.5-flash
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        # Используем актуальную и доступную для новых аккаунтов модель gemini-2.0-flash
+        model = genai.GenerativeModel('gemini-2.0-flash')
         response = model.generate_content(full_request)
         await message.answer(response.text)
     except Exception as e:
-        # Выводим реальный текст технической ошибки прямо в чат Telegram, если что-то пойдет не так
         print(f"Ошибка ИИ: {e}")
         await message.answer(f"⚠️ Ошибка ИИ: {e}")
 
 async def main():
     print("ИИ-Бот успешно запущен и готов думать!")
-    # Сбрасываем вебхук от старых конструкторов и удаляем застрявшие сообщения
     await bot.delete_webhook(drop_pending_updates=True) 
-    # Запускаем опрос сервера
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
