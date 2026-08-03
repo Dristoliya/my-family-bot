@@ -1,15 +1,16 @@
 import asyncio
+import sys
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 # Используем новый официальный клиент Google Gen AI
 from google import genai 
 
 # ==================== НАСТРОЙКИ КЛЮЧЕЙ ====================
-# 1. Твой токен от @BotFather (уже на месте)
+# 1. Твой токен от @BotFather
 TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
 
-# 2. Твой НАСТОЯЩИЙ ключ от Gemini (ОБЯЗАТЕЛЬНО должен начинаться на AIzaSy...)
-GOOGLE_API_KEY = "ВСТАВЬ_СЮДА_КЛЮЧ_НАЧИНАЮЩИЙСЯ_НА_AIzaSy"
+# 2. Вставь сюда свой рабочий ключ Gemini
+GOOGLE_API_KEY = "ВСТАВЬ_СЮДА_СВОЙ_РАБОЧИЙ_КЛЮЧ"
 # ==========================================================
 
 # Настраиваем клиент ИИ напрямую через ключ в коде
@@ -38,7 +39,9 @@ async def cmd_start(message: types.Message):
 
 @dp.message()
 async def handle_ai_message(message: types.Message):
-    full_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
+    # Кодируем текст в UTF-8, чтобы у сервера не было проблем с русскими буквами
+    raw_request = f"{AI_PROMPT}\n\nПользователь пишет: {message.text}"
+    full_request = raw_request.encode('utf-8', errors='ignore').decode('utf-8')
     
     try:
         # Используем актуальную модель gemini-3.6-flash
@@ -48,7 +51,6 @@ async def handle_ai_message(message: types.Message):
         )
         await message.answer(response.text)
     except Exception as e:
-        # Выводим реальный текст технической ошибки прямо в чат Telegram
         print(f"Ошибка ИИ: {e}")
         await message.answer(f"⚠️ Ошибка ИИ: {e}")
 
