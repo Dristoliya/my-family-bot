@@ -5,10 +5,10 @@ from aiogram.filters import CommandStart
 from google import genai 
 
 # ==================== НАСТРОЙКИ КЛЮЧЕЙ ====================
-# 1. Твой токен от @BotFather
+# 1. Твой токен от @BotFather (уже на месте)
 TELEGRAM_TOKEN = "8965787272:AAEH0lZwfL-QBmwzqzIMx8MBEu6Z-U8u_4w"
 
-# 2. Твой проверенный ключ от Gemini жестко прописан в код
+# 2. Твой рабочий ключ от Gemini (уже на месте)
 GOOGLE_API_KEY = "AQ.Ab8RN6IrmJ5bdAlMYX0SIpl52V4LWB50zY7Vl9Rq-MFaqqo7UA"
 # ==========================================================
 
@@ -48,8 +48,9 @@ async def handle_ai_message(message: types.Message):
         )
         await message.answer(response.text)
     except Exception as e:
+        # Выводим реальный текст технической ошибки прямо в чат Telegram
         print(f"Ошибка ИИ: {e}")
-        await message.answer("Ой, ИИ немного задумался. Проверь ключи настройки в коде!")
+        await message.answer(f"⚠️ Ошибка ИИ: {e}")
 
 async def main():
     print("ИИ-Бот успешно запущен и готов думать!")
